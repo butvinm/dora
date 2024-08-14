@@ -5,7 +5,8 @@
 
 Dora is a Python search engine that allows you to search your codebase by expression types.
 
-It is primarily designed to assist with migrating large codebases from Pydantic 1.10 to Pydantic 2.0, especially in cases where Pydantic-specific functions overlap with other function names, such as `pydantic.BaseModel.json()` and `requests.models.Response.json()`.
+It is initially aimed to assist with migrating large codebases from Pydantic 1.10 to Pydantic 2.0, especially in cases where Pydantic-specific functions overlap with other function names, such as `pydantic.BaseModel.json()` and `requests.models.Response.json()`.
+But it can be a handy general-purpose tool for exploring your codebase.
 
 Dora is deeply inspired by [Hoogle](https://hoogle.haskell.org/) and [Coogle](https://www.youtube.com/watch?v=wK1HjnwDQng&list=PLpM-Dvs8t0VYhYLxY-i7OcvBbDsG4izam&index=2).
 
