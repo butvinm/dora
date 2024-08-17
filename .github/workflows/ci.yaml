@@ -35,4 +35,4 @@ jobs:
       - name: Run tests
         run: |
           source $(poetry env info --path)/bin/activate
-          python tests/test.py
+          make run_tests
