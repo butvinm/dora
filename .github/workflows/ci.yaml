@@ -30,6 +30,7 @@ jobs:
         run: |
           poetry config virtualenvs.in-project true
           poetry run pip install -U pip
+          poetry install
           source ./.venv/bin/activate
 
       - name: Run tests
