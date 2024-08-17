@@ -1,0 +1,37 @@
+name: Dora CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+
+      - name: Install poetry
+        run: |
+          curl -sSL "https://install.python-poetry.org" | python
+
+          # Adding `poetry` to `$PATH`:
+          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies
+        run: |
+          poetry config virtualenvs.in-project true
+          poetry run pip install -U pip
+          source ./.venv/bin/activate
+
+      - name: Run tests
+        run: |
+          python tests/test.py
