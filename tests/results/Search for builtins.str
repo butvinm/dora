@@ -1,0 +1,8 @@
+Search for builtins.str
+returncode: 0
+stdout:
+tests/codebase/test.py:1:0 x = 'Hello, world!'
+tests/codebase/test.py:2:6 print(x)
+
+stderr:
+

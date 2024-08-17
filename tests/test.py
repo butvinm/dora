@@ -6,8 +6,8 @@ import os
 import subprocess
 from pathlib import Path
 
-CODEBASE_PATH = Path(__file__).parent.joinpath('codebase')
-RESULTS = Path(__file__).parent.joinpath('results')
+CODEBASE_PATH = Path(__file__).parent.joinpath('codebase').relative_to(Path.cwd())
+RESULTS = Path(__file__).parent.joinpath('results').relative_to(Path.cwd())
 RESULTS.mkdir(exist_ok=True)
 
 
@@ -39,14 +39,18 @@ def rerun_test_case(title: str, args: list[str]) -> str | None:
     if result_text != golden_result_text:
         failed_result_path = golden_result_path.with_suffix('.failed')
         failed_result_path.write_text(result_text)
-        result = _run(['diff', '-u', str(golden_result_path), str(failed_result_path)])
+        result = _run(['diff', '-u', golden_result_path, failed_result_path])
         return result.stdout
 
     return None
 
 
 test_cases = [
-    ('Given no args help should be shown', ['dora']),
+    ('Given no args help, should be shown', ['dora']),
+    ('Given extra args, help should be shown', ['dora', 'a', 'b', 'c']),
+    ('Given non-existing file, error should be shown', ['dora', 'non-existing-file.py']),
+    ('Given path only, all types should be displayed', ['dora', CODEBASE_PATH]),
+    ('Search for builtins.str', ['dora', CODEBASE_PATH, 'builtins.str']),
 ]
 
 

@@ -1,0 +1,114 @@
+Given path only, all types should be displayed
+returncode: 0
+stdout:
+tests/codebase/main.py:10:11
+    Expr:     return None
+    Type: None
+tests/codebase/main.py:15:11
+    Expr:     return a + b
+    Type: builtins.int
+tests/codebase/main.py:15:15
+    Expr:     return a + b
+    Type: builtins.int
+tests/codebase/main.py:15:11
+    Expr:     return a + b
+    Type: builtins.int
+tests/codebase/main.py:20:11
+    Expr:     return a + b
+    Type: builtins.int
+tests/codebase/main.py:20:15
+    Expr:     return a + b
+    Type: builtins.int
+tests/codebase/main.py:20:11
+    Expr:     return a + b
+    Type: builtins.int
+tests/codebase/main.py:25:11
+    Expr:     return a + b + c
+    Type: builtins.int
+tests/codebase/main.py:25:15
+    Expr:     return a + b + c
+    Type: builtins.int
+tests/codebase/main.py:25:11
+    Expr:     return a + b + c
+    Type: builtins.int
+tests/codebase/main.py:25:19
+    Expr:     return a + b + c
+    Type: builtins.int
+tests/codebase/main.py:25:11
+    Expr:     return a + b + c
+    Type: builtins.int
+tests/codebase/main.py:32:13
+    Expr:     c: int = 1,
+    Type: Literal[1]?
+tests/codebase/main.py:34:11
+    Expr:     return a + b + c
+    Type: builtins.int
+tests/codebase/main.py:34:15
+    Expr:     return a + b + c
+    Type: builtins.int
+tests/codebase/main.py:34:11
+    Expr:     return a + b + c
+    Type: builtins.int
+tests/codebase/main.py:34:19
+    Expr:     return a + b + c
+    Type: builtins.int
+tests/codebase/main.py:34:11
+    Expr:     return a + b + c
+    Type: builtins.int
+tests/codebase/main.py:39:11
+    Expr:     return a + b
+    Type: builtins.int
+tests/codebase/main.py:39:15
+    Expr:     return a + b
+    Type: builtins.int
+tests/codebase/main.py:39:11
+    Expr:     return a + b
+    Type: builtins.int
+tests/codebase/main.py:44:11
+    Expr:     return a + b
+    Type: builtins.int
+tests/codebase/main.py:44:15
+    Expr:     return a + b
+    Type: builtins.int
+tests/codebase/main.py:44:11
+    Expr:     return a + b
+    Type: builtins.int
+tests/codebase/main.py:49:11
+    Expr:     return a + b
+    Type: builtins.int
+tests/codebase/main.py:49:15
+    Expr:     return a + b
+    Type: builtins.int
+tests/codebase/main.py:49:11
+    Expr:     return a + b
+    Type: builtins.int
+tests/codebase/main.py:54:11
+    Expr:     return a
+    Type: Any
+tests/codebase/main.py:61:20
+    Expr:     c: dict[K, V] = {},
+    Type: builtins.dict[Any, Any]
+tests/codebase/main.py:65:13
+    Expr:     e: int = 1,
+    Type: Literal[1]?
+tests/codebase/main.py:67:11
+    Expr:     return None
+    Type: None
+tests/codebase/test.py:1:0
+    Expr: x = 'Hello, world!'
+    Type: builtins.str
+tests/codebase/test.py:1:4
+    Expr: x = 'Hello, world!'
+    Type: Literal['Hello, world!']?
+tests/codebase/test.py:2:0
+    Expr: print(x)
+    Type: Overload(def (*values: builtins.object, sep: Union[builtins.str, None] =, end: Union[builtins.str, None] =, file: Union[_typeshed.SupportsWrite[builtins.str], None] =, flush: Literal[False] =), def (*values: builtins.object, sep: Union[builtins.str, None] =, end: Union[builtins.str, None] =, file: Union[builtins._SupportsWriteAndFlush[builtins.str], None] =, flush: builtins.bool))
+tests/codebase/test.py:2:6
+    Expr: print(x)
+    Type: builtins.str
+tests/codebase/test.py:2:0
+    Expr: print(x)
+    Type: None
+
+stderr:
+
