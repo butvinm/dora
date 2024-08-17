@@ -3,10 +3,9 @@
 > The project is still in development and may look like a crap. I'm actively working on it.
 > Feel free to open an issue (or better yet, a PR) if you have any ideas or suggestions.
 
-Dora is a Python search engine that allows you to search your codebase by expression types.
+Dora is a Python search engine that allows you to search your codebase by type expressions.
 
 It is initially aimed to assist with migrating large codebases from Pydantic 1.10 to Pydantic 2.0, especially in cases where Pydantic-specific functions overlap with other function names, such as `pydantic.BaseModel.json()` and `requests.models.Response.json()`.
-But it can be a handy general-purpose tool for exploring your codebase.
 
 Dora is deeply inspired by [Hoogle](https://hoogle.haskell.org/) and [Coogle](https://www.youtube.com/watch?v=wK1HjnwDQng&list=PLpM-Dvs8t0VYhYLxY-i7OcvBbDsG4izam&index=2).
 
@@ -111,3 +110,14 @@ main.py:11:0
     Expr: print(user)
     Type: None
 ```
+
+## Roadmap
+
+- [x] Proof of concept: search for types in a single file using mypy as backend.
+- [x] Search within multiple files, excluding some files or directories.
+- [ ] More accurate output, pointing to the exact location of the expression.
+- [ ] Improve searching algorithm: properly handle overlaods, default arguments, etc.
+- [ ] More convenient expressions: aliases for builtin types (maybe can be stolen from mypy/nodes.py), trim package name (__main__)
+- [ ] Search for declarations, be able to select search target: declarations, usages, or both.
+- [ ] The very far future: search by metainfo and context ("has @xxx decorator", "call of method .a() on type B", "subclass of A")
+- [ ] Move to some fancy CLI library.

@@ -11,7 +11,7 @@ dora = "dora.main:main"
 [tool.poetry.dependencies]
 # We use mypy internal functionality, not the public API, so changes in both mypy or python can lead to breaking our code
 python = "~3.12"
-mypy = "~1.11.1"
+mypy = "^1.11.1"
 
 
 [build-system]
