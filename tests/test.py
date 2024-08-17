@@ -46,7 +46,7 @@ def rerun_test_case(title: str, args: list[str]) -> str | None:
 
 
 test_cases = [
-    ('Given no args help, should be shown', ['dora']),
+    ('Given no args, help should be shown', ['dora']),
     ('Given extra args, help should be shown', ['dora', 'a', 'b', 'c']),
     ('Given non-existing file, error should be shown', ['dora', 'non-existing-file.py']),
     ('Given path only, all types should be displayed', ['dora', CODEBASE_PATH]),
