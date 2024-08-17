@@ -62,7 +62,9 @@ def main() -> None:
         sys.exit(1)
 
     if file.is_dir():
+        print('dir', file)
         for f in file.rglob('*.py'):
+            print(f)
             for line in search_file(f, type_expression):
                 print(line)
     elif file.is_file():
