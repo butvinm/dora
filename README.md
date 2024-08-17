@@ -1,6 +1,6 @@
 # Dora
 
-> The project is still in development and may look like a crap. I'm actively working on it.
+> The project is still in development and may look like shit. I'm actively working on it.
 > Feel free to open an issue (or better yet, a PR) if you have any ideas or suggestions.
 
 Dora is a Python search engine that allows you to search your codebase by type expressions.
