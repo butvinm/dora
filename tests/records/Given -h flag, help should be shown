@@ -1,0 +1,19 @@
+title: Given -h flag, help should be shown
+args: ['dora', '-h']
+exitcode: 0
+stdout:
+usage: dora [-h] [-t <type_expression>] paths [paths ...]
+
+Search source files by type expressions.
+
+positional arguments:
+  paths                 The source files to search in.
+
+options:
+  -h, --help            show this help message and exit
+  -t <type_expression>, --type-expression <type_expression>
+                        The type expression to search for. If not provided,
+                        all types in the file will be listed.
+
+stderr:
+

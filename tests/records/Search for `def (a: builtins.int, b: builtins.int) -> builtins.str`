@@ -1,0 +1,13 @@
+title: Search for `def (a: builtins.int, b: builtins.int) -> builtins.str`
+args: ['dora', PosixPath('tests/codebase'), '-t', 'def (a: builtins.int, b: builtins.int) -> builtins.str']
+exitcode: 0
+stdout:
+tests/codebase/subfolder/test2.py:9:6
+      def (a: builtins.int, b: builtins.int) -> builtins.str (NameExpr)
+      v
+print(foo(a, b))
+
+
+
+stderr:
+

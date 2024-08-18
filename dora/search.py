@@ -1,6 +1,6 @@
 """Search engine."""
 
-from random import randint
+from random import random
 from typing import Any, Generator, Iterable
 
 from mypy.build import BuildManager, BuildResult, BuildSource, build
@@ -37,7 +37,7 @@ class DoraPlugin(Plugin):
             A random number to force revalidation of the source file.
         """
         if ctx.path in self._sources:
-            return randint(0, 69)  # noqa: S311
+            return random()  # noqa: S311
 
         return None
 

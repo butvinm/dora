@@ -1,7 +1,5 @@
 # comment
 
-# x: str = 1
-
 # no-args stub function
 from typing import TypeVar
 

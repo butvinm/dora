@@ -1,7 +1,0 @@
-Given non-existing file, error should be shown
-returncode: 1
-stdout:
-File non-existing-file.py does not exist
-
-stderr:
-

@@ -3,39 +3,42 @@
 These tests run a dora binary and compare output with previously recorded.
 """
 import os
+import shutil
 import subprocess
 from pathlib import Path
+from typing import TypeAlias
 
 CODEBASE_PATH = Path(__file__).parent.joinpath('codebase').relative_to(Path.cwd())
-RESULTS = Path(__file__).parent.joinpath('results').relative_to(Path.cwd())
-RESULTS.mkdir(exist_ok=True)
+RECORDS = Path(__file__).parent.joinpath('records').relative_to(Path.cwd())
+RECORDS.mkdir(exist_ok=True)
 
 
 def _run(args: list[str]) -> subprocess.CompletedProcess:
     return subprocess.run(args, capture_output=True, text=True)
 
 
-def _build_result_text(title: str, result: subprocess.CompletedProcess) -> str:
-    result_text = f'{title}\n'
-    result_text += f'returncode: {result.returncode}\n'
+def _build_result_text(title: str, args: list[str], result: subprocess.CompletedProcess) -> str:
+    result_text = f'title: {title}\n'
+    result_text += f'args: {args}\n'
+    result_text += f'exitcode: {result.returncode}\n'
     result_text += f'stdout:\n{result.stdout}\n'
     result_text += f'stderr:\n{result.stderr}\n'
     return result_text
 
 
 def record_test_case(title: str, args: list[str]) -> None:
-    golden_result_path = RESULTS.joinpath(title)
+    golden_result_path = RECORDS.joinpath(title)
     result = _run(args)
-    golden_result_text = _build_result_text(title, result)
+    golden_result_text = _build_result_text(title, args, result)
     golden_result_path.write_text(golden_result_text)
 
 
 def rerun_test_case(title: str, args: list[str]) -> str | None:
-    golden_result_path = RESULTS.joinpath(title)
+    golden_result_path = RECORDS.joinpath(title)
     golden_result_text = golden_result_path.read_text()
 
     result = _run(args)
-    result_text = _build_result_text(title, result)
+    result_text = _build_result_text(title, args, result)
     if result_text != golden_result_text:
         failed_result_path = golden_result_path.with_suffix('.failed')
         failed_result_path.write_text(result_text)
@@ -46,23 +49,30 @@ def rerun_test_case(title: str, args: list[str]) -> str | None:
 
 
 test_cases = [
-    ('Given no args, help should be shown', ['dora']),
-    ('Given extra args, help should be shown', ['dora', 'a', 'b', 'c']),
+    ('Given no args, usage should be shown', ['dora']),
+    ('Given -h flag, help should be shown', ['dora', '-h']),
     ('Given non-existing file, error should be shown', ['dora', 'non-existing-file.py']),
-    ('Given path only, all types should be displayed', ['dora', CODEBASE_PATH]),
-    ('Search for builtins.str', ['dora', CODEBASE_PATH, 'builtins.str']),
+    ('Without specified type expression, all types should be displayed', ['dora', CODEBASE_PATH]),
+    ('Given directory, all files should be analyzed recursively', ['dora', CODEBASE_PATH]),
+    ('Given duplicated pathes, mypy error expected', ['dora', CODEBASE_PATH, CODEBASE_PATH / 'main.py']),
+    ('Search for `builtins.str`', ['dora', CODEBASE_PATH, '-t', 'builtins.str']),
+    ('Search for `def (a: builtins.int, b: builtins.int) -> builtins.str`', ['dora', CODEBASE_PATH, '-t', 'def (a: builtins.int, b: builtins.int) -> builtins.str']),
 ]
+TestCase: TypeAlias = tuple[str, list[str]]
 
 
-def record_test_cases() -> None:
-    print('RECORD')
+def clear_cache() -> None:
+    for path in Path.cwd().rglob('.mypy_cache'):
+        shutil.rmtree(path)
+
+
+def record_test_cases(test_cases: list[TestCase]) -> None:
     for title, args in test_cases:
         print(title, args)
         record_test_case(title, args)
 
 
-def rerun_test_cases() -> bool:
-    print('RERUN')
+def rerun_test_cases(test_cases: list[TestCase]) -> bool:
     failed = False
     for title, args in test_cases:
         print(title, args, end=' ')
@@ -78,8 +88,25 @@ def rerun_test_cases() -> bool:
 
 
 if __name__ == '__main__':
+    # check if results contain redundant test cases
+    recorded_test_cases = [result.name for result in RECORDS.glob('*')]
+    redundant_test_cases = set(recorded_test_cases) - {title for title, _ in test_cases}
+    if redundant_test_cases:
+        print(f'Results directory contains redundant test cases: {redundant_test_cases}')
+        exit(2)
+
     if os.environ.get('DORA_SNAPSHOT_RECORD'):
-        record_test_cases()
+        print('Recording test cases')
+        clear_cache()
+        record_test_cases(test_cases)
     else:
-        if rerun_test_cases():
+        print('Rerunning test cases w/o cache')
+        clear_cache()
+
+        if rerun_test_cases(test_cases):
+            exit(1)
+
+        print()
+        print('Rerunning test cases with cache')
+        if rerun_test_cases(test_cases):
             exit(1)
