@@ -53,6 +53,7 @@ test_cases = [
     ('Given -h flag, help should be shown', ['dora', '-h']),
     ('Given non-existing file, error should be shown', ['dora', 'non-existing-file.py']),
     ('Without specified type expression, all types should be displayed', ['dora', CODEBASE_PATH]),
+    ('With --no-color flag output should not contain ansi colors', ['dora', '--no-color', CODEBASE_PATH]),
     ('Given directory, all files should be analyzed recursively', ['dora', CODEBASE_PATH]),
     ('Given duplicated pathes, mypy error expected', ['dora', CODEBASE_PATH, CODEBASE_PATH / 'main.py']),
     ('Search for `builtins.str`', ['dora', CODEBASE_PATH, '-t', 'builtins.str']),

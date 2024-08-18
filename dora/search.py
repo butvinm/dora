@@ -10,6 +10,8 @@ from mypy.options import Options
 from mypy.plugin import Plugin, ReportConfigContext
 from mypy.traverser import TraverserVisitor
 
+from dora.ansi_colors import Ansi
+
 
 class DoraPlugin(Plugin):
     """Plugin to force mypy revalidate source files.
@@ -57,15 +59,23 @@ class SearchResult:
         self.node = node
         self.type_expression = type_expression
 
-    def __str__(self) -> str:
+    def to_str(self, color: bool = False) -> str:
         """Render the search result as a string.
+
+        Args:
+            color: Use ANSI colors to highlight expressions.
 
         Returns:
             A string representation of the search result.
         """
         node_type = self.node.__class__.__name__
-        node_text = self._extract_node_text(self.mypy_file.path, self.node)
         column_pointer_offset = ' ' * self.node.column
+
+        node_text = self._extract_node_text(self.mypy_file.path, self.node)
+        if color:
+            end_column = self.node.end_column or self.node.column + 1
+            node_text = node_text[:self.node.column] + Ansi.green.fg(node_text[self.node.column:end_column]) + node_text[end_column:]
+
         result_text = f'{self.mypy_file.path}:{self.node.line}:{self.node.column}\n'
         result_text += f'{column_pointer_offset}{self.type_expression} ({node_type})\n'
         result_text += f'{column_pointer_offset}v\n'
