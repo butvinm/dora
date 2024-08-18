@@ -1,6 +1,10 @@
 """Dora CLI."""
 
 import argparse
+import os
+import sys
+
+from mypy.errors import CompileError
 
 from dora.search import search
 
@@ -22,8 +26,16 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    for search_result in search(args.paths, args.type_expression):
-        print(search_result, end='\n\n')
+    for path in args.paths:
+        if not os.path.exists(path):
+            parser.error(f'The path "{path}" does not exist.')
+
+    try:
+        for search_result in search(args.paths, args.type_expression):
+            print(search_result, end='\n\n')
+    except CompileError as e:
+        print(e, file=sys.stderr)
+        exit(1)
 
 
 if __name__ == '__main__':
