@@ -1,0 +1,9 @@
+title: Given no args, usage should be shown
+args: ['dora']
+exitcode: 2
+stdout:
+
+stderr:
+usage: dora [-h] [-t <type_expression>] paths [paths ...]
+dora: error: the following arguments are required: paths
+

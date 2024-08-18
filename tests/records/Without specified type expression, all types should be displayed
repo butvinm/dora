@@ -1,0 +1,409 @@
+title: Without specified type expression, all types should be displayed
+args: ['dora', PosixPath('tests/codebase')]
+exitcode: 0
+stdout:
+tests/codebase/subfolder/test2.py:2:11
+           builtins.str (OpExpr)
+           v
+    return str(a) + str(b)
+
+
+tests/codebase/subfolder/test2.py:2:11
+           builtins.str (CallExpr)
+           v
+    return str(a) + str(b)
+
+
+tests/codebase/subfolder/test2.py:2:11
+           Overload(def (object: builtins.object =) -> builtins.str, def (object: _collections_abc.Buffer, encoding: builtins.str =, errors: builtins.str =) -> builtins.str) (NameExpr)
+           v
+    return str(a) + str(b)
+
+
+tests/codebase/subfolder/test2.py:2:15
+               builtins.int (NameExpr)
+               v
+    return str(a) + str(b)
+
+
+tests/codebase/subfolder/test2.py:2:20
+                    builtins.str (CallExpr)
+                    v
+    return str(a) + str(b)
+
+
+tests/codebase/subfolder/test2.py:2:20
+                    Overload(def (object: builtins.object =) -> builtins.str, def (object: _collections_abc.Buffer, encoding: builtins.str =, errors: builtins.str =) -> builtins.str) (NameExpr)
+                    v
+    return str(a) + str(b)
+
+
+tests/codebase/subfolder/test2.py:2:24
+                        builtins.int (NameExpr)
+                        v
+    return str(a) + str(b)
+
+
+tests/codebase/subfolder/test2.py:5:4
+    Literal[10]? (IntExpr)
+    v
+a = 10
+
+
+tests/codebase/subfolder/test2.py:5:0
+builtins.int (NameExpr)
+v
+a = 10
+
+
+tests/codebase/subfolder/test2.py:6:4
+    Literal[11]? (IntExpr)
+    v
+b = 11
+
+
+tests/codebase/subfolder/test2.py:6:0
+builtins.int (NameExpr)
+v
+b = 11
+
+
+tests/codebase/subfolder/test2.py:7:0
+None (CallExpr)
+v
+print(a + b)
+
+
+tests/codebase/subfolder/test2.py:7:0
+Overload(def (*values: builtins.object, sep: Union[builtins.str, None] =, end: Union[builtins.str, None] =, file: Union[_typeshed.SupportsWrite[builtins.str], None] =, flush: Literal[False] =), def (*values: builtins.object, sep: Union[builtins.str, None] =, end: Union[builtins.str, None] =, file: Union[builtins._SupportsWriteAndFlush[builtins.str], None] =, flush: builtins.bool)) (NameExpr)
+v
+print(a + b)
+
+
+tests/codebase/subfolder/test2.py:7:6
+      builtins.int (OpExpr)
+      v
+print(a + b)
+
+
+tests/codebase/subfolder/test2.py:7:6
+      builtins.int (NameExpr)
+      v
+print(a + b)
+
+
+tests/codebase/subfolder/test2.py:7:10
+          builtins.int (NameExpr)
+          v
+print(a + b)
+
+
+tests/codebase/subfolder/test2.py:9:0
+None (CallExpr)
+v
+print(foo(a, b))
+
+
+tests/codebase/subfolder/test2.py:9:0
+Overload(def (*values: builtins.object, sep: Union[builtins.str, None] =, end: Union[builtins.str, None] =, file: Union[_typeshed.SupportsWrite[builtins.str], None] =, flush: Literal[False] =), def (*values: builtins.object, sep: Union[builtins.str, None] =, end: Union[builtins.str, None] =, file: Union[builtins._SupportsWriteAndFlush[builtins.str], None] =, flush: builtins.bool)) (NameExpr)
+v
+print(foo(a, b))
+
+
+tests/codebase/subfolder/test2.py:9:6
+      builtins.str (CallExpr)
+      v
+print(foo(a, b))
+
+
+tests/codebase/subfolder/test2.py:9:6
+      def (a: builtins.int, b: builtins.int) -> builtins.str (NameExpr)
+      v
+print(foo(a, b))
+
+
+tests/codebase/subfolder/test2.py:9:10
+          builtins.int (NameExpr)
+          v
+print(foo(a, b))
+
+
+tests/codebase/subfolder/test2.py:9:13
+             builtins.int (NameExpr)
+             v
+print(foo(a, b))
+
+
+tests/codebase/main.py:13:11
+           None (NameExpr)
+           v
+    return None
+
+
+tests/codebase/main.py:18:11
+           builtins.int (OpExpr)
+           v
+    return a + b
+
+
+tests/codebase/main.py:18:11
+           builtins.int (NameExpr)
+           v
+    return a + b
+
+
+tests/codebase/main.py:18:15
+               builtins.int (NameExpr)
+               v
+    return a + b
+
+
+tests/codebase/main.py:23:11
+           builtins.int (OpExpr)
+           v
+    return a + b
+
+
+tests/codebase/main.py:23:11
+           builtins.int (NameExpr)
+           v
+    return a + b
+
+
+tests/codebase/main.py:23:15
+               builtins.int (NameExpr)
+               v
+    return a + b
+
+
+tests/codebase/main.py:28:11
+           builtins.int (OpExpr)
+           v
+    return a + b + c
+
+
+tests/codebase/main.py:28:11
+           builtins.int (OpExpr)
+           v
+    return a + b + c
+
+
+tests/codebase/main.py:28:11
+           builtins.int (NameExpr)
+           v
+    return a + b + c
+
+
+tests/codebase/main.py:28:15
+               builtins.int (NameExpr)
+               v
+    return a + b + c
+
+
+tests/codebase/main.py:28:19
+                   builtins.int (NameExpr)
+                   v
+    return a + b + c
+
+
+tests/codebase/main.py:35:13
+             Literal[1]? (IntExpr)
+             v
+    c: int = 1,
+
+
+tests/codebase/main.py:37:11
+           builtins.int (OpExpr)
+           v
+    return a + b + c
+
+
+tests/codebase/main.py:37:11
+           builtins.int (OpExpr)
+           v
+    return a + b + c
+
+
+tests/codebase/main.py:37:11
+           builtins.int (NameExpr)
+           v
+    return a + b + c
+
+
+tests/codebase/main.py:37:15
+               builtins.int (NameExpr)
+               v
+    return a + b + c
+
+
+tests/codebase/main.py:37:19
+                   builtins.int (NameExpr)
+                   v
+    return a + b + c
+
+
+tests/codebase/main.py:42:11
+           builtins.int (OpExpr)
+           v
+    return a + b
+
+
+tests/codebase/main.py:42:11
+           builtins.int (NameExpr)
+           v
+    return a + b
+
+
+tests/codebase/main.py:42:15
+               builtins.int (NameExpr)
+               v
+    return a + b
+
+
+tests/codebase/main.py:47:11
+           builtins.int (OpExpr)
+           v
+    return a + b
+
+
+tests/codebase/main.py:47:11
+           builtins.int (NameExpr)
+           v
+    return a + b
+
+
+tests/codebase/main.py:47:15
+               builtins.int (NameExpr)
+               v
+    return a + b
+
+
+tests/codebase/main.py:52:11
+           builtins.int (OpExpr)
+           v
+    return a + b
+
+
+tests/codebase/main.py:52:11
+           builtins.int (NameExpr)
+           v
+    return a + b
+
+
+tests/codebase/main.py:52:15
+               builtins.int (NameExpr)
+               v
+    return a + b
+
+
+tests/codebase/main.py:55:4
+    Any (CallExpr)
+    v
+T = TypeVar('T')
+
+
+tests/codebase/main.py:55:-1
+Any (TypeVarExpr)
+v
+T = TypeVar('T')
+
+
+tests/codebase/main.py:55:0
+Any (NameExpr)
+v
+T = TypeVar('T')
+
+
+tests/codebase/main.py:61:11
+           T`-1 (NameExpr)
+           v
+    return a
+
+
+tests/codebase/main.py:64:4
+    Any (CallExpr)
+    v
+K = TypeVar('K')
+
+
+tests/codebase/main.py:64:-1
+Any (TypeVarExpr)
+v
+K = TypeVar('K')
+
+
+tests/codebase/main.py:64:0
+Any (NameExpr)
+v
+K = TypeVar('K')
+
+
+tests/codebase/main.py:65:4
+    Any (CallExpr)
+    v
+V = TypeVar('V')
+
+
+tests/codebase/main.py:65:-1
+Any (TypeVarExpr)
+v
+V = TypeVar('V')
+
+
+tests/codebase/main.py:65:0
+Any (NameExpr)
+v
+V = TypeVar('V')
+
+
+tests/codebase/main.py:73:20
+                    builtins.dict[K`-1, V`-2] (DictExpr)
+                    v
+    c: dict[K, V] = {},
+
+
+tests/codebase/main.py:77:13
+             Literal[1]? (IntExpr)
+             v
+    e: int = 1,
+
+
+tests/codebase/main.py:79:11
+           None (NameExpr)
+           v
+    return None
+
+
+tests/codebase/test.py:1:4
+    Literal['Hello, world!']? (StrExpr)
+    v
+x = 'Hello, world!'
+
+
+tests/codebase/test.py:1:0
+builtins.str (NameExpr)
+v
+x = 'Hello, world!'
+
+
+tests/codebase/test.py:2:0
+None (CallExpr)
+v
+print(x)
+
+
+tests/codebase/test.py:2:0
+Overload(def (*values: builtins.object, sep: Union[builtins.str, None] =, end: Union[builtins.str, None] =, file: Union[_typeshed.SupportsWrite[builtins.str], None] =, flush: Literal[False] =), def (*values: builtins.object, sep: Union[builtins.str, None] =, end: Union[builtins.str, None] =, file: Union[builtins._SupportsWriteAndFlush[builtins.str], None] =, flush: builtins.bool)) (NameExpr)
+v
+print(x)
+
+
+tests/codebase/test.py:2:6
+      builtins.str (NameExpr)
+      v
+print(x)
+
+
+
+stderr:
+

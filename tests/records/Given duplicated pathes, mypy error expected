@@ -1,0 +1,10 @@
+title: Given duplicated pathes, mypy error expected
+args: ['dora', PosixPath('tests/codebase'), PosixPath('tests/codebase/main.py')]
+exitcode: 1
+stdout:
+
+stderr:
+tests/codebase/main.py: error: Duplicate module named "tests.codebase.main" (also at "tests/codebase/main.py")
+tests/codebase/main.py: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#mapping-file-paths-to-modules for more info
+tests/codebase/main.py: note: Common resolutions include: a) using `--exclude` to avoid checking one of them, b) adding `__init__.py` somewhere, c) using `--explicit-package-bases` or adjusting MYPYPATH
+

@@ -1,7 +1,10 @@
 # comment
 
 # no-args stub function
-def no_args_function():
+from typing import TypeVar
+
+
+def no_args_function():  # type: ignore
     pass
 
 
@@ -49,13 +52,22 @@ def simple_args_only_kwargs_only_function(a: int, /, *, b: int) -> int:
     return a + b
 
 
+T = TypeVar('T')
+
 # generic function
-def generic_function[T](a: T) -> T:
+
+
+def generic_function(a: T) -> T:
     return a
 
 
+K = TypeVar('K')
+V = TypeVar('V')
+
 # very complex function definition
-def very_complex_function_definition[K, V](
+
+
+def very_complex_function_definition(
     a: K,
     b: V,
     c: dict[K, V] = {},

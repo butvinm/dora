@@ -1,0 +1,9 @@
+title: Given non-existing file, error should be shown
+args: ['dora', 'non-existing-file.py']
+exitcode: 2
+stdout:
+
+stderr:
+usage: dora [-h] [-t <type_expression>] paths [paths ...]
+dora: error: The path "non-existing-file.py" does not exist.
+
