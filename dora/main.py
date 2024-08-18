@@ -16,7 +16,7 @@ Args:
 """.strip()
 
 
-def _extract_expr_location(file_content: str, expr: Expression) -> str:
+def _extract_expr_str(file_content: str, expr: Expression) -> str:
     lines = file_content.splitlines()
     start = expr.line - 1
     end = expr.end_line
@@ -39,10 +39,10 @@ def search_file(file: Path, type_expression: str | None) -> Iterable[str]:
     file_types = result.graph['__main__'].manager.all_types
     for expr, ty in file_types.items():
         if type_expression is None:
-            expr_str = _extract_expr_location(content, expr)
+            expr_str = _extract_expr_str(content, expr)
             yield f'{file}:{expr.line}:{expr.column}\n    Expr: {expr_str}\n    Type: {ty}'
         elif str(ty) == type_expression:
-            expr_str = _extract_expr_location(content, expr)
+            expr_str = _extract_expr_str(content, expr)
             yield f'{file}:{expr.line}:{expr.column} {expr_str}'
 
 
@@ -62,7 +62,9 @@ def main() -> None:
         sys.exit(1)
 
     if file.is_dir():
+        print('dir', file)
         for f in file.rglob('*.py'):
+            print(f)
             for line in search_file(f, type_expression):
                 print(line)
     elif file.is_file():

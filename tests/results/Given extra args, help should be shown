@@ -1,0 +1,12 @@
+Given extra args, help should be shown
+returncode: 1
+stdout:
+Usage: dora <file> [<type_expression>]
+
+Args:
+    file:              The Python file to analyze
+    type_expression:   The type expression to search for. If not provided, all types
+                       in the file will be listed.
+
+stderr:
+
