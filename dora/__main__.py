@@ -15,14 +15,19 @@ def main() -> None:
     parser.add_argument(
         '-t',
         '--type-expression',
-        metavar='<type_expression>',
         help='The type expression to search for. If not provided, all types in the file will be listed.',
     )
     parser.add_argument(
         'paths',
-        metavar='paths',
         nargs='+',
         help='The source files to search in.',
+    )
+    parser.set_defaults(color=True)
+    parser.add_argument(
+        '--no-color',
+        dest='color',
+        help='Suppress colored output.',
+        action='store_false',
     )
     args = parser.parse_args()
 
@@ -32,7 +37,7 @@ def main() -> None:
 
     try:
         for search_result in search(args.paths, args.type_expression):
-            print(search_result, end='\n\n')
+            print(search_result.to_str(args.color), end='\n\n')
     except CompileError as e:
         print(e, file=sys.stderr)
         exit(1)

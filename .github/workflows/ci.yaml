@@ -32,6 +32,9 @@ jobs:
           poetry run pip install -U pip
           poetry install
 
+      - name: Lint
+        run: poetry run mypy dora
+
       - name: Run tests
         run: |
           source $(poetry env info --path)/bin/activate

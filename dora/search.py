@@ -1,14 +1,16 @@
 """Search engine."""
 
 from random import random
-from typing import Any, Generator, Iterable
+from typing import Generator, Iterable
 
 from mypy.build import BuildManager, BuildResult, BuildSource, build
 from mypy.find_sources import create_source_list
-from mypy.nodes import MypyFile, Node
+from mypy.nodes import Expression, MypyFile, Node
 from mypy.options import Options
 from mypy.plugin import Plugin, ReportConfigContext
-from mypy.traverser import TraverserVisitor
+from mypy.traverser import ExtendedTraverserVisitor
+
+from dora.ansi_colors import Ansi
 
 
 class DoraPlugin(Plugin):
@@ -27,7 +29,7 @@ class DoraPlugin(Plugin):
         super().__init__(options)
         self._sources = {source.path for source in sources}
 
-    def report_config_data(self, ctx: ReportConfigContext) -> int | None:
+    def report_config_data(self, ctx: ReportConfigContext) -> float | None:
         """Force revalidation of the source file.
 
         Args:
@@ -57,15 +59,23 @@ class SearchResult:
         self.node = node
         self.type_expression = type_expression
 
-    def __str__(self) -> str:
+    def to_str(self, color: bool = False) -> str:
         """Render the search result as a string.
+
+        Args:
+            color: Use ANSI colors to highlight expressions.
 
         Returns:
             A string representation of the search result.
         """
         node_type = self.node.__class__.__name__
-        node_text = self._extract_node_text(self.mypy_file.path, self.node)
         column_pointer_offset = ' ' * self.node.column
+
+        node_text = self._extract_node_text(self.mypy_file.path, self.node)
+        if color:
+            end_column = self.node.end_column or self.node.column + 1
+            node_text = node_text[:self.node.column] + Ansi.green.fg(node_text[self.node.column:end_column]) + node_text[end_column:]
+
         result_text = f'{self.mypy_file.path}:{self.node.line}:{self.node.column}\n'
         result_text += f'{column_pointer_offset}{self.type_expression} ({node_type})\n'
         result_text += f'{column_pointer_offset}v\n'
@@ -146,7 +156,7 @@ def _search(
         yield from visitor.search_results
 
 
-class SearchVisitor(TraverserVisitor):
+class SearchVisitor(ExtendedTraverserVisitor):
     """Performs a search for a type expression in a single ??? source file."""
 
     def __init__(
@@ -168,38 +178,24 @@ class SearchVisitor(TraverserVisitor):
         self.manager = manager
         self.search_results: list[SearchResult] = []
 
-    def generic_visit(self, name: str, o: Node) -> None:
+    def visit(self, o: Node) -> bool:
         """Check type_expression against given node.
 
         Args:
-            name: Visitor name (visit_*: e.g. visit_var)
             o: Target node.
 
         Returns:
-            Far traversing result.
+            Always True to continue traversing.
         """
-        node_type = self.manager.all_types.get(o)
-        if node_type is not None:
-            if self.type_expression is None:
-                type_expression = str(node_type)
-            else:
-                type_expression = self.type_expression
+        if isinstance(o, Expression):
+            node_type = self.manager.all_types.get(o)
+            if node_type is not None:
+                if self.type_expression is None:
+                    type_expression = str(node_type)
+                else:
+                    type_expression = self.type_expression
 
-            if str(node_type) == type_expression:
-                self.search_results.append(SearchResult(self.mypy_file, o, type_expression))
+                if str(node_type) == type_expression:
+                    self.search_results.append(SearchResult(self.mypy_file, o, type_expression))
 
-        return super().__getattribute__(name)(o)
-
-    def __getattribute__(self, name: str) -> Any:
-        """Mock behavior of all possible visit_* methods.
-
-        Args:
-            name: Arg name.
-
-        Returns:
-            Visit method mock if name visit_* method acquired.
-        """
-        if name.startswith('visit_'):
-            return lambda o: self.generic_visit(name, o)
-
-        return super().__getattribute__(name)
+        return True
