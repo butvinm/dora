@@ -5,7 +5,7 @@ import argparse
 from dora.search import search
 
 
-def console_entry() -> None:
+def main() -> None:
     """CLI entry point."""
     parser = argparse.ArgumentParser(description='Search source files by type expressions.')
     parser.add_argument(
@@ -23,8 +23,8 @@ def console_entry() -> None:
     args = parser.parse_args()
 
     for search_result in search(args.paths, args.type_expression):
-        print(search_result)
+        print(search_result, end='\n\n')
 
 
 if __name__ == '__main__':
-    console_entry()
+    main()

@@ -6,13 +6,17 @@ authors = ["Mihail Butvin <butvin.mihail@yandex.ru>"]
 readme = "README.md"
 
 [tool.poetry.scripts]
-dora = "dora.main:main"
+dora = "dora.__main__:main"
 
 [tool.poetry.dependencies]
-# We use mypy internal functionality, not the public API, so changes in both mypy or python can lead to breaking our code
+# We use mypy internal functionality, not the public API, so changes in both mypy or python can lead to breaking of our code
 python = "~3.12"
 mypy = "^1.11.1"
 
+[tool.poetry.group.lint.dependencies]
+isort = "^5.13.2"
+# We use a trunk version of WPS to bump flake8-commas version. Waiting for the next release.
+wemake-python-styleguide = { git = "https://github.com/wemake-services/wemake-python-styleguide", branch = "master" }
 
 [build-system]
 requires = ["poetry-core"]
