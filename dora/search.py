@@ -17,15 +17,15 @@ class DoraPlugin(Plugin):
     Inspired by MypycPlugin from mypyc.
     """
 
-    def __init__(self, paths: list[str], options: Options) -> None:
+    def __init__(self, sources: list[BuildSource], options: Options) -> None:
         """Initialize the plugin.
 
         Args:
-            paths: The source files whose cache should be invalidated.
+            sources: The build sources whose cache should be invalidated.
             options: The mypy options
         """
         super().__init__(options)
-        self._pathes = set(paths)
+        self._sources = {source.path for source in sources}
 
     def report_config_data(self, ctx: ReportConfigContext) -> int | None:
         """Force revalidation of the source file.
@@ -36,7 +36,7 @@ class DoraPlugin(Plugin):
         Returns:
             A random number to force revalidation of the source file.
         """
-        if ctx.path in self._pathes:
+        if ctx.path in self._sources:
             return randint(0, 69)  # noqa: S311
 
         return None
@@ -113,7 +113,7 @@ def search(paths: list[str], type_expression: str | None) -> Iterable[SearchResu
     build_result = build(
         sources=sources,
         options=options,
-        extra_plugins=[DoraPlugin(paths, options)],
+        extra_plugins=[DoraPlugin(sources, options)],
     )
     return _search(sources, type_expression, build_result)
 
@@ -191,7 +191,7 @@ class SearchVisitor(TraverserVisitor):
         return super().__getattribute__(name)(o)
 
     def __getattribute__(self, name: str) -> Any:
-        """Mock behaviour of all possible visit_* methods.
+        """Mock behavior of all possible visit_* methods.
 
         Args:
             name: Arg name.
