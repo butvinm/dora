@@ -44,18 +44,31 @@ print(user)
 You can search for the usage of the `User` class in your codebase by running:
 
 ```bash
-dora main.py __main__.User
+dora main.py -t 'main.User'
 ```
 
-This will produce the following output:
+This will produce the following output (in real terminal it uses ANSI colors for expressions highlighting, so output'd much readable):
 
 ```
-main.py:10:7 user = User(id=1, name='John Doe', age='invalid')
-main.py:10:0 user = User(id=1, name='John Doe', age='invalid')
-main.py:11:6 print(user)
+main.py:10:7
+       main.User (CallExpr)
+       v
+user = User(id=1, name='John Doe', age='invalid')
+
+
+main.py:10:0
+main.User (NameExpr)
+v
+user = User(id=1, name='John Doe', age='invalid')
+
+
+main.py:11:6
+      main.User (NameExpr)
+      v
+print(user)
 ```
 
-You can also display the types of all expressions in your codebase by running:
+You can also display the types of all expressions in your codebase by running `dora` without specified type expression:
 
 ```bash
 dora main.py
@@ -65,59 +78,92 @@ The output will be verbose and may contain duplicates:
 
 ```
 main.py:5:4
-    Expr:     id: int
-    Type: builtins.int
-main.py:5:4
-    Expr:     id: int
-    Type: Any
+    builtins.int (NameExpr)
+    v
+    id: int
+
+
 main.py:6:4
-    Expr:     name: str
-    Type: builtins.str
-main.py:6:4
-    Expr:     name: str
-    Type: Any
+    builtins.str (NameExpr)
+    v
+    name: str
+
+
 main.py:7:4
-    Expr:     age: int
-    Type: builtins.int
-main.py:7:4
-    Expr:     age: int
-    Type: Any
+    builtins.int (NameExpr)
+    v
+    age: int
+
+
 main.py:10:7
-    Expr: user = User(id=1, name='John Doe', age='invalid')
-    Type: def (*, id: builtins.int, name: builtins.str, age: builtins.int) -> __main__.User
+       main.User (CallExpr)
+       v
+user = User(id=1, name='John Doe', age='invalid')
+
+
+main.py:10:7
+       def (*, id: builtins.int, name: builtins.str, age: builtins.int) -> main.User (NameExpr)
+       v
+user = User(id=1, name='John Doe', age='invalid')
+
+
 main.py:10:15
-    Expr: user = User(id=1, name='John Doe', age='invalid')
-    Type: Literal[1]?
+               Literal[1]? (IntExpr)
+               v
+user = User(id=1, name='John Doe', age='invalid')
+
+
 main.py:10:23
-    Expr: user = User(id=1, name='John Doe', age='invalid')
-    Type: Literal['John Doe']?
+                       Literal['John Doe']? (StrExpr)
+                       v
+user = User(id=1, name='John Doe', age='invalid')
+
+
 main.py:10:39
-    Expr: user = User(id=1, name='John Doe', age='invalid')
-    Type: Literal['invalid']?
-main.py:10:7
-    Expr: user = User(id=1, name='John Doe', age='invalid')
-    Type: __main__.User
+                                       Literal['invalid']? (StrExpr)
+                                       v
+user = User(id=1, name='John Doe', age='invalid')
+
+
 main.py:10:0
-    Expr: user = User(id=1, name='John Doe', age='invalid')
-    Type: __main__.User
+main.User (NameExpr)
+v
+user = User(id=1, name='John Doe', age='invalid')
+
+
 main.py:11:0
-    Expr: print(user)
-    Type: Overload(def (*values: builtins.object, sep: Union[builtins.str, None] =, end: Union[builtins.str, None] =, file: Union[_typeshed.SupportsWrite[builtins.str], None] =, flush: Literal[False] =), def (*values: builtins.object, sep: Union[builtins.str, None] =, end: Union[builtins.str, None] =, file: Union[builtins._SupportsWriteAndFlush[builtins.str], None] =, flush: builtins.bool))
+None (CallExpr)
+v
+print(user)
+
+
+main.py:11:0
+Overload(def (*values: builtins.object, sep: Union[builtins.str, None] =, end: Union[builtins.str, None] =, file: Union[_typeshed.SupportsWrite[builtins.str], None] =, flush: Literal[False] =), def (*values: builtins.object, sep: Union[builtins.str, None] =, end: Union[builtins.str, None] =, file: Union[builtins._SupportsWriteAndFlush[builtins.str], None] =, flush: builtins.bool)) (NameExpr)
+v
+print(user)
+
+
 main.py:11:6
-    Expr: print(user)
-    Type: __main__.User
-main.py:11:0
-    Expr: print(user)
-    Type: None
+      main.User (NameExpr)
+      v
+print(user)
 ```
 
 ## Roadmap
 
 - [x] Proof of concept: search for types in a single file using mypy as backend.
 - [x] Search within multiple files, excluding some files or directories.
-- [ ] More accurate output, pointing to the exact location of the expression.
-- [ ] Improve searching algorithm: properly handle overlaods, default arguments, etc.
-- [ ] More convenient expressions: aliases for builtin types (maybe can be stolen from mypy/nodes.py), trim package name (__main__)
+- [x] More accurate output, pointing to the exact location of the expression.
+- [x] Move to some fancy CLI library.
+- [ ] Improve searching algorithm: properly handle overloads, inheritance, default arguments, etc.
+- [ ] More convenient expressions: aliases for builtin types (maybe can be stolen from mypy/nodes.py)
+    * `builtins.str`   -> `str`
+    * `Literal['abc']` -> `'abc'`
+    * `Union[T, K, V]` -> `T | K | V`
+- [ ] Pipe multiple queries, support simple regex search as well: `dora codebase/pydantic.py -t "pydantic.User" -t "pydantic.Url" -r "\.strip"` means within locations of pydantic.User find pydantic.Url and than r"\.strip" matches.
+- [ ] Some sort of pattern matching: names/types stubs. E.g. `def (_: str, _: int) -> str` should find function with any arg names.
 - [ ] Search for declarations, be able to select search target: declarations, usages, or both.
 - [ ] The very far future: search by metainfo and context ("has @xxx decorator", "call of method .a() on type B", "subclass of A")
-- [ ] Move to some fancy CLI library.
+- [ ] The final goal:
+    * `(_ <: pydantic.BaseModel).json`
+    * `(pydantic.Url).strip`
