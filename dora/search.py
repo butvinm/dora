@@ -8,9 +8,9 @@ from mypy.find_sources import create_source_list
 from mypy.nodes import Expression, MypyFile, Node
 from mypy.options import Options
 from mypy.plugin import Plugin, ReportConfigContext
-from mypy.traverser import ExtendedTraverserVisitor
 
-from dora.ansi_colors import Ansi
+from dora import ansi
+from dora.mypy_legacy.traverser import ExtendedTraverserVisitor, accept
 
 
 class DoraPlugin(Plugin):
@@ -74,11 +74,23 @@ class SearchResult:
         node_text = self._extract_node_text(self.mypy_file.path, self.node)
         if color:
             end_column = self.node.end_column or self.node.column + 1
-            node_text = node_text[:self.node.column] + Ansi.green.fg(node_text[self.node.column:end_column]) + node_text[end_column:]
+            node_text = '{before}{highlight}{after}'.format(
+                before=node_text[:self.node.column],
+                highlight=ansi.fg(ansi.Color.green, node_text[self.node.column:end_column]),
+                after=node_text[end_column:],
+            )
 
-        result_text = f'{self.mypy_file.path}:{self.node.line}:{self.node.column}\n'
-        result_text += f'{column_pointer_offset}{self.type_expression} ({node_type})\n'
-        result_text += f'{column_pointer_offset}v\n'
+        result_text = '{path}:{line}:{column}\n'.format(
+            path=self.mypy_file.path,
+            line=self.node.line,
+            column=self.node.column,
+        )
+        result_text += '{column_pointer_offset}{type_expression} ({node_type})\n'.format(
+            column_pointer_offset=column_pointer_offset,
+            type_expression=self.type_expression,
+            node_type=node_type,
+        )
+        result_text += '{column_pointer_offset}v\n'.format(column_pointer_offset=column_pointer_offset)
         result_text += node_text
         return result_text
 
@@ -152,7 +164,7 @@ def _search(
             continue
 
         visitor = SearchVisitor(state.tree, type_expression, build_result.manager)
-        state.tree.accept(visitor)
+        accept(state.tree, visitor)
         yield from visitor.search_results
 
 

@@ -33,7 +33,7 @@ def main() -> None:
 
     for path in args.paths:
         if not os.path.exists(path):
-            parser.error(f'The path "{path}" does not exist.')
+            parser.error('The path "{path}" does not exist.'.format(path=path))
 
     try:
         for search_result in search(args.paths, args.type_expression):
