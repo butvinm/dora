@@ -1,5 +1,5 @@
 title: Given duplicated pathes, mypy error expected
-args: ['dora', PosixPath('tests/codebase'), PosixPath('tests/codebase/main.py')]
+args: ['dora', PosixPath('tests/codebase/main.py'), PosixPath('tests/codebase/main.py')]
 exitcode: 1
 stdout:
 

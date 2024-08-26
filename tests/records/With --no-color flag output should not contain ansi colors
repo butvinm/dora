@@ -374,6 +374,24 @@ tests/codebase/main.py:79:11
     return None
 
 
+tests/codebase/new_type_syntax.py:1:16
+                Overload(def (object: builtins.object =) -> builtins.str, def (object: _collections_abc.Buffer, encoding: builtins.str =, errors: builtins.str =) -> builtins.str) (NameExpr)
+                v
+type StrAlias = str
+
+
+tests/codebase/new_type_syntax.py:-1:-1
+Overload(def (object: builtins.object =) -> builtins.str, def (object: _collections_abc.Buffer, encoding: builtins.str =, errors: builtins.str =) -> builtins.str) (NameExpr)
+v
+def foo[T: StrAlias](x: T) -> T:
+
+
+tests/codebase/new_type_syntax.py:5:11
+           Any (NameExpr)
+           v
+    return x
+
+
 tests/codebase/test.py:1:4
     Literal['Hello, world!']? (StrExpr)
     v

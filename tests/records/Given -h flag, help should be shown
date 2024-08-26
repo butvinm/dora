@@ -2,7 +2,8 @@ title: Given -h flag, help should be shown
 args: ['dora', '-h']
 exitcode: 0
 stdout:
-usage: dora [-h] [-t TYPE_EXPRESSION] [--no-color] paths [paths ...]
+usage: dora [-h] [-t TYPE_EXPRESSION] [--no-color] [--show-mypy-errors]
+            paths [paths ...] [-- mypy_args]
 
 Search source files by type expressions.
 
@@ -15,6 +16,10 @@ options:
                         The type expression to search for. If not provided,
                         all types in the file will be listed.
   --no-color            Suppress colored output.
+  --show-mypy-errors    Show mypy errors before the search results.
+
+Arguments after "--" will be passed to mypy. Use `mypy --help` to show
+available options.
 
 stderr:
 
