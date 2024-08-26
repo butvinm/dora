@@ -117,7 +117,7 @@ class SearchResult:
         return ''.join(lines)
 
 
-def search(paths: list[str], type_expression: str | None, mypy_args: str) -> tuple[BuildResult, Iterable[SearchResult]]:
+def search(paths: list[str], type_expression: str | None, mypy_args: list[str]) -> tuple[BuildResult, Iterable[SearchResult]]:
     """Search for a type expression in a source file.
 
     Args:
