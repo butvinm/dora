@@ -5,6 +5,7 @@ from typing import Generator, Iterable
 
 from mypy.build import BuildManager, BuildResult, BuildSource, build
 from mypy.find_sources import create_source_list
+from mypy.main import process_options
 from mypy.nodes import Expression, MypyFile, Node
 from mypy.options import Options
 from mypy.plugin import Plugin, ReportConfigContext
@@ -116,17 +117,19 @@ class SearchResult:
         return ''.join(lines)
 
 
-def search(paths: list[str], type_expression: str | None) -> Iterable[SearchResult]:
+def search(paths: list[str], type_expression: str | None, mypy_args: list[str]) -> tuple[BuildResult, Iterable[SearchResult]]:
     """Search for a type expression in a source file.
 
     Args:
         paths: The source files to search in.
         type_expression: The type expression to search for.
+        mypy_args: Arguments passed to mypy build.
 
     Returns:
-        Found occurrences of the type expression.
+        Mypy build result and search results.
     """
-    options = Options()
+    # mypy requires at least one file to be specified, so we pass something
+    _, options = process_options(mypy_args + ['stub.py'])
     options.export_types = True
     options.preserve_asts = True
 
@@ -137,7 +140,7 @@ def search(paths: list[str], type_expression: str | None) -> Iterable[SearchResu
         options=options,
         extra_plugins=[DoraPlugin(sources, options)],
     )
-    return _search(sources, type_expression, build_result)
+    return build_result, _search(sources, type_expression, build_result)
 
 
 def _search(

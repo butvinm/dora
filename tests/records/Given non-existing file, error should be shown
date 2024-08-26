@@ -4,6 +4,7 @@ exitcode: 2
 stdout:
 
 stderr:
-usage: dora [-h] [-t TYPE_EXPRESSION] [--no-color] paths [paths ...]
+usage: dora [-h] [-t TYPE_EXPRESSION] [--no-color] [--show-mypy-errors]
+            paths [paths ...] [-- mypy_args]
 dora: error: The path "non-existing-file.py" does not exist.
 

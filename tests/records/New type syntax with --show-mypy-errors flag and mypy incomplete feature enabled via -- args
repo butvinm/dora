@@ -1,0 +1,26 @@
+title: New type syntax with --show-mypy-errors flag and mypy incomplete feature enabled via -- args
+args: ['dora', PosixPath('tests/codebase/new_type_syntax.py'), '--show-mypy-errors', '--', '--enable-incomplete-feature', 'NewGenericSyntax']
+exitcode: 0
+stdout:
+tests/codebase/new_type_syntax.py:1:16
+                def () -> Overload(def (object: builtins.object =) -> builtins.str, def (object: _collections_abc.Buffer, encoding: builtins.str =, errors: builtins.str =) -> builtins.str) (LambdaExpr)
+                v
+type StrAlias = [32mstr[0m
+
+
+tests/codebase/new_type_syntax.py:1:16
+                Overload(def (object: builtins.object =) -> builtins.str, def (object: _collections_abc.Buffer, encoding: builtins.str =, errors: builtins.str =) -> builtins.str) (NameExpr)
+                v
+type StrAlias = [32mstr[0m
+
+
+tests/codebase/new_type_syntax.py:5:11
+           T`-1 (NameExpr)
+           v
+    return [32mx[0m
+
+
+
+stderr:
+
+

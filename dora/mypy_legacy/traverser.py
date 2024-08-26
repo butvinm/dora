@@ -101,6 +101,7 @@ from mypy.nodes import TempNode as TempNode
 from mypy.nodes import TryStmt as TryStmt
 from mypy.nodes import TupleExpr as TupleExpr
 from mypy.nodes import TypeAlias as TypeAlias
+from mypy.nodes import TypeAliasStmt as TypeAliasStmt
 from mypy.nodes import TypeAliasExpr as TypeAliasExpr
 from mypy.nodes import TypeApplication as TypeApplication
 from mypy.nodes import TypedDictExpr as TypedDictExpr
@@ -184,6 +185,10 @@ class TraverserVisitor:
 
     def visit_name_expr(self, o: NameExpr) -> None:
         pass
+
+    def visit_type_alias_stmt(self, o: TypeAliasStmt) -> None:
+        accept(o.name, self)
+        accept(o.value, self)
 
     def visit_member_expr(self, o: MemberExpr) -> None:
         accept(o.expr, self)
@@ -678,6 +683,11 @@ class ExtendedTraverserVisitor(TraverserVisitor):
         if not self.visit(o):
             return
         super().visit_match_stmt(o)
+
+    def visit_type_alias_stmt(self, o: TypeAliasStmt) -> None:
+        if not self.visit(o):
+            return
+        super().visit_type_alias_stmt(o)
 
     # Expressions (default no-op implementation)
 
@@ -1352,3 +1362,8 @@ def _(node: ClassPattern, visitor: TraverserVisitor) -> None:
 @accept.register
 def _(node: RequiredType, visitor: TraverserVisitor) -> None:
     return accept(node.item, visitor)
+
+
+@accept.register
+def _(node: TypeAliasStmt, visitor: TraverserVisitor) -> None:
+    return visitor.visit_type_alias_stmt(node)

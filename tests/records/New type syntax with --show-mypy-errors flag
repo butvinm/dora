@@ -1,0 +1,28 @@
+title: New type syntax with --show-mypy-errors flag
+args: ['dora', PosixPath('tests/codebase/new_type_syntax.py'), '--show-mypy-errors']
+exitcode: 0
+stdout:
+tests/codebase/new_type_syntax.py:1:16
+                Overload(def (object: builtins.object =) -> builtins.str, def (object: _collections_abc.Buffer, encoding: builtins.str =, errors: builtins.str =) -> builtins.str) (NameExpr)
+                v
+type StrAlias = [32mstr[0m
+
+
+tests/codebase/new_type_syntax.py:-1:-1
+Overload(def (object: builtins.object =) -> builtins.str, def (object: _collections_abc.Buffer, encoding: builtins.str =, errors: builtins.str =) -> builtins.str) (NameExpr)
+v
+def foo[T: StrAlias](x: T) -> T:[32m[0mdef foo[T: StrAlias](x: T) -> T:
+
+
+tests/codebase/new_type_syntax.py:5:11
+           Any (NameExpr)
+           v
+    return [32mx[0m
+
+
+
+stderr:
+tests/codebase/new_type_syntax.py:1: error: PEP 695 type aliases are not yet supported. Use --enable-incomplete-feature=NewGenericSyntax for experimental support  [valid-type]
+tests/codebase/new_type_syntax.py:4: error: PEP 695 generics are not yet supported. Use --enable-incomplete-feature=NewGenericSyntax for experimental support  [valid-type]
+tests/codebase/new_type_syntax.py:4: error: Name "T" is not defined  [name-defined]
+

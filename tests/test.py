@@ -33,7 +33,7 @@ def record_test_case(title: str, args: list[str]) -> None:
     golden_result_path.write_text(golden_result_text)
 
 
-def rerun_test_case(title: str, args: list[str]) -> str | None:
+def replay_test_case(title: str, args: list[str]) -> str | None:
     golden_result_path = RECORDS.joinpath(title)
     golden_result_text = golden_result_path.read_text()
 
@@ -42,22 +42,61 @@ def rerun_test_case(title: str, args: list[str]) -> str | None:
     if result_text != golden_result_text:
         failed_result_path = golden_result_path.with_suffix('.failed')
         failed_result_path.write_text(result_text)
-        result = _run(['diff', '-u', golden_result_path, failed_result_path])
+        result = _run(['diff', '-u', '--color', golden_result_path, failed_result_path])
         return result.stdout
 
     return None
 
 
 test_cases = [
-    ('Given no args, usage should be shown', ['dora']),
-    ('Given -h flag, help should be shown', ['dora', '-h']),
-    ('Given non-existing file, error should be shown', ['dora', 'non-existing-file.py']),
-    ('Without specified type expression, all types should be displayed', ['dora', CODEBASE_PATH]),
-    ('With --no-color flag output should not contain ansi colors', ['dora', '--no-color', CODEBASE_PATH]),
-    ('Given directory, all files should be analyzed recursively', ['dora', CODEBASE_PATH]),
-    ('Given duplicated pathes, mypy error expected', ['dora', CODEBASE_PATH, CODEBASE_PATH / 'main.py']),
-    ('Search for `builtins.str`', ['dora', CODEBASE_PATH, '-t', 'builtins.str']),
-    ('Search for `def (a: builtins.int, b: builtins.int) -> builtins.str`', ['dora', CODEBASE_PATH, '-t', 'def (a: builtins.int, b: builtins.int) -> builtins.str']),
+    (
+        'Given no args, usage should be shown',
+        ['dora'],
+    ),
+    (
+        'Given -h flag, help should be shown',
+        ['dora', '-h'],
+    ),
+    (
+        'Given non-existing file, error should be shown',
+        ['dora', 'non-existing-file.py'],
+    ),
+    (
+        'Without specified type expression, all types should be displayed',
+        ['dora', CODEBASE_PATH],
+    ),
+    (
+        'With --no-color flag output should not contain ansi colors',
+        ['dora', '--no-color', CODEBASE_PATH],
+    ),
+    (
+        'Given directory, all files should be analyzed recursively',
+        ['dora', CODEBASE_PATH],
+    ),
+    (
+        'Given duplicated pathes, mypy error expected',
+        ['dora', CODEBASE_PATH / 'main.py', CODEBASE_PATH / 'main.py'],
+    ),
+    (
+        'Search for `builtins.str`',
+        ['dora', CODEBASE_PATH, '-t', 'builtins.str'],
+    ),
+    (
+        'Search for `def (a: builtins.int, b: builtins.int) -> builtins.str`',
+        ['dora', CODEBASE_PATH, '-t', 'def (a: builtins.int, b: builtins.int) -> builtins.str'],
+    ),
+    (
+        'New type syntax without --show-mypy-errors flag',
+        ['dora', CODEBASE_PATH / 'new_type_syntax.py'],
+    ),
+    (
+        'New type syntax with --show-mypy-errors flag',
+        ['dora', CODEBASE_PATH / 'new_type_syntax.py', '--show-mypy-errors'],
+    ),
+    (
+        'New type syntax with --show-mypy-errors flag and mypy incomplete feature enabled via -- args',
+        ['dora', CODEBASE_PATH / 'new_type_syntax.py', '--show-mypy-errors', '--', '--enable-incomplete-feature', 'NewGenericSyntax'],
+    ),
 ]
 TestCase: TypeAlias = tuple[str, list[str]]
 
@@ -73,11 +112,11 @@ def record_test_cases(test_cases: list[TestCase]) -> None:
         record_test_case(title, args)
 
 
-def rerun_test_cases(test_cases: list[TestCase]) -> bool:
+def replay_test_cases(test_cases: list[TestCase]) -> bool:
     failed = False
     for title, args in test_cases:
         print(title, args, end=' ')
-        diff = rerun_test_case(title, args)
+        diff = replay_test_case(title, args)
         if diff:
             print('FAILED')
             print(diff)
@@ -101,13 +140,13 @@ if __name__ == '__main__':
         clear_cache()
         record_test_cases(test_cases)
     else:
-        print('Rerunning test cases w/o cache')
+        print('Replayning test cases w/o cache')
         clear_cache()
 
-        if rerun_test_cases(test_cases):
+        if replay_test_cases(test_cases):
             exit(1)
 
         print()
-        print('Rerunning test cases with cache')
-        if rerun_test_cases(test_cases):
+        print('Replayning test cases with cache')
+        if replay_test_cases(test_cases):
             exit(1)
