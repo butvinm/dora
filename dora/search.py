@@ -1,17 +1,17 @@
 """Search engine."""
 
+from functools import cache
 from random import random
 from typing import Generator, Iterable
 
 from mypy.build import BuildManager, BuildResult, BuildSource, build
-from mypy.find_sources import create_source_list
-from mypy.main import process_options
 from mypy.nodes import Expression, MypyFile, Node
-from mypy.options import Options
+from mypy.options import Options as MypyOptions
 from mypy.plugin import Plugin, ReportConfigContext
 
 from dora import ansi
 from dora.mypy_legacy.traverser import ExtendedTraverserVisitor, accept
+from dora.options import DoraOptions
 
 
 class DoraPlugin(Plugin):
@@ -20,7 +20,7 @@ class DoraPlugin(Plugin):
     Inspired by MypycPlugin from mypyc.
     """
 
-    def __init__(self, sources: list[BuildSource], options: Options) -> None:
+    def __init__(self, sources: list[BuildSource], options: MypyOptions) -> None:
         """Initialize the plugin.
 
         Args:
@@ -96,6 +96,7 @@ class SearchResult:
         return result_text
 
     @classmethod
+    @cache
     def _extract_node_text(cls, path: str, node: Node) -> str:
         """Extract the text of a node from the source file.
 
@@ -106,8 +107,6 @@ class SearchResult:
         Returns:
             Node occurrence in the file.
         """
-        # probably would be to slow
-        # we can probably provide file content as an argument
         with open(path, 'r') as f:
             lines = f.readlines()
 
@@ -117,30 +116,25 @@ class SearchResult:
         return ''.join(lines)
 
 
-def search(paths: list[str], type_expression: str | None, mypy_args: list[str]) -> tuple[BuildResult, Iterable[SearchResult]]:
+def search(dora_options: DoraOptions, mypy_options: MypyOptions) -> tuple[BuildResult, Iterable[SearchResult]]:
     """Search for a type expression in a source file.
 
     Args:
-        paths: The source files to search in.
-        type_expression: The type expression to search for.
-        mypy_args: Arguments passed to mypy build.
+        dora_options: Dora options.
+        mypy_options: Mypy options.
 
     Returns:
         Mypy build result and search results.
     """
-    # mypy requires at least one file to be specified, so we pass something
-    _, options = process_options(mypy_args + ['stub.py'])
-    options.export_types = True
-    options.preserve_asts = True
-
-    sources = create_source_list(paths, options)
+    mypy_options.export_types = True
+    mypy_options.preserve_asts = True
 
     build_result = build(
-        sources=sources,
-        options=options,
-        extra_plugins=[DoraPlugin(sources, options)],
+        sources=dora_options.sources,
+        options=mypy_options,
+        extra_plugins=[DoraPlugin(dora_options.sources, mypy_options)],
     )
-    return build_result, _search(sources, type_expression, build_result)
+    return build_result, _search(dora_options.sources, dora_options.type_expression, build_result)
 
 
 def _search(

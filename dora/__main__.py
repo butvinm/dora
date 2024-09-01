@@ -6,24 +6,8 @@ import sys
 
 from mypy.errors import CompileError
 
+from dora.options import parse_cli_options
 from dora.search import search
-
-
-def split_dash_dash_args(args: list[str]) -> tuple[list[str], list[str]]:
-    """Split args at '--'.
-
-    Args:
-        args: All command line arguments.
-
-    Returns:
-        Args list splitted by '--'. First part is dora arguments and second'll be passed to mypy.
-    """
-    try:
-        rest_sep = args.index('--')
-    except ValueError:
-        rest_sep = len(args)
-
-    return args[:rest_sep], args[rest_sep + 1:]
 
 
 def make_arg_parser() -> argparse.ArgumentParser:
@@ -69,20 +53,19 @@ def make_arg_parser() -> argparse.ArgumentParser:
 def main() -> None:
     """CLI entry point."""
     parser = make_arg_parser()
-    dora_args, mypy_args = split_dash_dash_args(sys.argv[1:])
-    args = parser.parse_args(dora_args)
+    dora_options, mypy_options = parse_cli_options(parser, sys.argv[1:])
 
-    for path in args.paths:
-        if not os.path.exists(path):
-            parser.error('The path "{path}" does not exist.'.format(path=path))
+    for source in dora_options.sources:
+        if source.path is None or not os.path.exists(source.path):
+            parser.error('The path "{path}" does not exist.'.format(path=source.path))
 
     try:
-        build_result, search_results = search(args.paths, args.type_expression, mypy_args)
-        if args.show_mypy_errors:
-            print(*build_result.errors, sep='\n', file=sys.stderr)
-
+        build_result, search_results = search(dora_options, mypy_options)
         for search_result in search_results:
-            print(search_result.to_str(args.color), end='\n\n')
+            print(search_result.to_str(dora_options.color), end='\n\n')
+
+        if dora_options.show_mypy_errors:
+            print(*build_result.errors, sep='\n', file=sys.stderr)
     except CompileError as e:
         print(e, file=sys.stderr)
         exit(1)
